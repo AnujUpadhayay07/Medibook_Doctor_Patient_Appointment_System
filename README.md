@@ -72,12 +72,11 @@
 
 | Page | Preview |
 |---|---|
-| 🔑 Login page | <img width="1917" height="965" alt="image" src="" />|
 | 🏠 Home page | <img width="1919" height="968" alt="image" src="https://github.com/user-attachments/assets/8a83b6c4-accf-4e6d-82b5-a37e41bac1a5" />|
+| 🔑 Login page | <img width="1865" height="968" alt="image" src="https://github.com/user-attachments/assets/cf9089fc-a3ef-4b0c-88ae-7f09c72a3d1d" />|
 | 👤 Patient dashboard | <img width="1850" height="968" alt="image" src="https://github.com/user-attachments/assets/8871f958-d42d-46c8-bd5c-86111a2716ea" />|
-| 👨‍⚕️ Doctor dashboard | _Add screenshot here_ |
+| 👨‍⚕️ Doctor dashboard | <img width="1858" height="965" alt="image" src="https://github.com/user-attachments/assets/54df63f3-af08-4d33-93f3-d3743b0b3c61" />|
 | 🛠️ Admin dashboard | <img width="1918" height="976" alt="image" src="https://github.com/user-attachments/assets/5ccda8f2-fdf2-461b-ab2e-66763bc8d82e" />|
-| 📅 Appointment booking | _Add screenshot here_ |
 
 ---
 

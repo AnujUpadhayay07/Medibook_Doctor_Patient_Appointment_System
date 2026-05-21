@@ -84,6 +84,12 @@ function formatDate(d) {
   return new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 }
 
+// ✅ Safely strip any existing "Dr." prefix before re-adding it
+function buildDrName(rawName = "") {
+  const clean = rawName.replace(/^Dr\.?\s*/i, "").trim();
+  return clean ? `Dr. ${clean}` : "Doctor";
+}
+
 // ─── Skeleton ──────────────────────────────────────────────────────────────────
 function Skeleton({ className }) {
   return <div className={`animate-pulse bg-blue-50 rounded-xl ${className}`} />;
@@ -135,15 +141,14 @@ function StatCard({ label, value, deltaLabel, icon: Icon, gradient, light, accen
   );
 }
 
-// ─── Header Banner (NO search bar) ────────────────────────────────────────────
-// 🔥 Uses user from AuthContext directly — always reflects latest name after profile update
+// ─── Header Banner ─────────────────────────────────────────────────────────────
 function HeaderBanner({ user, dashData, greeting, today }) {
-  // 🔥 Prefer AuthContext user for name/speciality (updated on profile save)
-  // Fall back to dashData.doctor for anything not in context
-  const displayName  = user?.name       || dashData?.doctor?.name       || "Doctor";
-  const speciality   = user?.speciality || dashData?.doctor?.speciality || "Specialist";
-  const isApproved   = dashData?.doctor?.isApproved;
-  const firstName    = "Dr. " + displayName.split(" ")[0];
+  const rawName   = user?.name       || dashData?.doctor?.name       || "";
+  const speciality = user?.speciality || dashData?.doctor?.speciality || "Specialist";
+  const isApproved = dashData?.doctor?.isApproved;
+
+  // ✅ Fix: strip any existing Dr. prefix, then add it once
+  const drName = buildDrName(rawName);
 
   return (
     <div
@@ -164,11 +169,11 @@ function HeaderBanner({ user, dashData, greeting, today }) {
       </svg>
 
       <div className="relative flex items-center justify-between gap-4">
-        {/* Left: Greeting + name + speciality */}
         <div className="flex-1">
           <p className="text-blue-100 text-sm font-medium">{greeting} 👨‍⚕️</p>
           <div className="flex items-center gap-2 mt-0.5">
-            <h1 className="text-white text-2xl font-bold tracking-tight">{firstName}</h1>
+            {/* ✅ drName is always "Dr. Anuj" — never "Dr. Dr. Anuj" */}
+            <h1 className="text-white text-2xl font-bold tracking-tight">{drName}</h1>
             {isApproved && <MdVerified size={20} style={{ color: "#38bdf8" }} />}
           </div>
           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -181,7 +186,6 @@ function HeaderBanner({ user, dashData, greeting, today }) {
             )}
           </div>
 
-          {/* Status pill */}
           <div className="flex items-center gap-2 mt-3">
             <span
               className="text-[11px] font-bold px-3 py-1 rounded-full"
@@ -190,12 +194,11 @@ function HeaderBanner({ user, dashData, greeting, today }) {
                 color:      isApproved ? "#86efac" : "#fde047",
               }}
             >
-             
+              {isApproved ? "✓ Approved" : "⏳ Pending Approval"}
             </span>
           </div>
         </div>
 
-        {/* Right: Active status + notification */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <div className="bg-white/15 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 text-center">
             <div className="text-white text-base font-bold leading-tight">Active</div>
@@ -320,7 +323,6 @@ function ProgressRing({ value, max, size = 80, stroke = 7, color = "#0ea5e9" }) 
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
 export default function DoctorOverview({ setActiveSection }) {
-  // 🔥 user from context — always up-to-date after profile save via updateUser()
   const { user } = useAuth();
 
   const [dashData,    setDashData]    = useState(null);
@@ -358,8 +360,6 @@ export default function DoctorOverview({ setActiveSection }) {
 
   return (
     <div className="space-y-5">
-
-      {/* ── Header — 🔥 passes user (context) + dashData separately ── */}
       <HeaderBanner
         user={user}
         dashData={dashData}
@@ -367,7 +367,6 @@ export default function DoctorOverview({ setActiveSection }) {
         today={todayStr}
       />
 
-      {/* ── Stats ── */}
       {loadingDash ? (
         <StatsSkeleton />
       ) : errorDash ? (
@@ -390,9 +389,7 @@ export default function DoctorOverview({ setActiveSection }) {
         </div>
       )}
 
-      {/* ── Queue + Requests ── */}
       <div className="grid grid-cols-[1.4fr_1fr] gap-4">
-
         {/* Today's Queue */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow">
           <SectionHeader
@@ -401,7 +398,6 @@ export default function DoctorOverview({ setActiveSection }) {
             actionLabel="See all"
           />
 
-          {/* Progress ring */}
           {!loadingDash && !errorDash && stats.todayAppointments > 0 && (
             <div className="flex items-center gap-4 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-100">
               <div className="relative flex-shrink-0">
@@ -495,7 +491,6 @@ export default function DoctorOverview({ setActiveSection }) {
             </div>
           )}
 
-          {/* Footer stats */}
           {!loadingDash && !errorDash && (
             <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
               <div className="text-center">

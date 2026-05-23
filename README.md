@@ -11,7 +11,7 @@
 ![JWT](https://img.shields.io/badge/Auth-JWT-orange?style=flat-square)
 ![Express](https://img.shields.io/badge/Express.js-API-000000?style=flat-square&logo=express)
 
-[🌐 Live Demo](https://your-netlify-app-link.netlify.app/) · [📖 API Reference](#-api-endpoints) · [🚀 Getting Started](#-getting-started)
+[🌐 Live Demo](https://medibook-appointment.netlify.app/) · [📖 API Reference](#-api-endpoints) · [🚀 Getting Started](#-getting-started)
 
 </div>
 
